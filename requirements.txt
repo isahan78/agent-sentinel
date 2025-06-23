@@ -1,0 +1,21 @@
+# Core dependencies
+torch>=1.9.0
+transformers>=4.20.0
+numpy>=1.21.0
+pandas>=1.3.0
+
+# Visualization
+plotly>=5.0.0
+networkx>=2.6.0
+
+# Development
+pytest>=6.0.0
+black>=21.0.0
+flake8>=3.9.0
+
+# Optional: Circuit analysis (if available)
+# circuit-tracer  # Add when available
+
+# Utilities
+tqdm>=4.62.0
+datasets>=2.0.0
