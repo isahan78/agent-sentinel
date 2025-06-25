@@ -1,4 +1,5 @@
 LICENSE
+LICENSE.txt
 README.md
 setup.py
 agentsentinel.egg-info/PKG-INFO
