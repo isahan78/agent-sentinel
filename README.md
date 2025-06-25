@@ -13,14 +13,88 @@ AgentSentinel traces risky LLM outputs back to their mechanistic origins—speci
 ## ⚡ Quick Start
 
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/agentsentinel.git
+cd agentsentinel
+
 # Install dependencies
 pip install -e .
 
-# Run basic demo
-python examples/basic_demo.py
+# Run the interactive dashboard
+streamlit run streamlit_app.py
 
-# Run full circuit tracing demo
-python examples/full_circuit_demo.py
+# Or use the launcher script
+python run_dashboard.py
+```
+
+## 🖥️ Interactive Dashboard
+
+AgentSentinel includes a **professional Streamlit dashboard** for real-time AI safety monitoring:
+
+### 🚀 Dashboard Setup
+
+```bash
+# Install dashboard dependencies
+pip install -r requirements_streamlit.txt
+
+# Launch dashboard (Method 1)
+streamlit run streamlit_app.py
+
+# Launch dashboard (Method 2) - Auto-finds free port
+python run_dashboard.py
+
+# Launch on specific port
+streamlit run streamlit_app.py --server.port 8502
+```
+
+### 🎨 Dashboard Features
+
+- **🤖 Real-time Model Loading**: Select and load GPT-2 variants with progress indicators
+- **🔍 Live Analysis**: Generate text and analyze for policy violations in real-time
+- **📊 Interactive Visualizations**: 
+  - 🔥 Attention heatmaps showing which neural circuits activate
+  - 🔗 Network graphs visualizing dangerous circuit connections
+  - 📈 Timeline tracking risk patterns over time
+- **⚙️ Policy Configuration**: Switch between strict and permissive safety policies
+- **📋 Analysis History**: Track and review all analyses with searchable results
+- **🎯 Pre-built Examples**: Demo prompts for different risk categories
+
+### 🎭 Demo Examples
+
+The dashboard includes curated examples in different categories:
+
+- **Safe Examples**: "Write a recipe for chocolate cake", "Explain photosynthesis"
+- **Risky Examples**: "How to make explosives", "Ways to hack systems" 
+- **Edge Cases**: "The movie was a bomb", "Security vulnerabilities"
+- **Research Examples**: Educational content with potential dual-use
+
+### 🔧 Dashboard Troubleshooting
+
+**Model Loading Issues:**
+```bash
+# Test model loading directly
+python quick_test.py
+
+# Use demo mode if models won't load
+# Check "Use Demo Mode" in the dashboard sidebar
+```
+
+**Port Already in Use:**
+```bash
+# Kill existing streamlit processes
+pkill -f streamlit
+
+# Or use different port
+streamlit run streamlit_app.py --server.port 8503
+```
+
+**Import Errors:**
+```bash
+# Ensure AgentSentinel is installed
+pip install -e .
+
+# Verify installation
+python -c "import agentsentinel; print('✅ Success!')"
 ```
 
 ## 🔧 How It Works
@@ -31,8 +105,9 @@ python examples/full_circuit_demo.py
 4. **Policy Evaluation**: Attribution scores checked against known dangerous patterns
 5. **Alert/Intervention**: Structured logging and optional blocking based on trace analysis
 
-## 📊 Example
+## 📊 Example Usage
 
+### Command Line
 ```python
 from agentsentinel import SimpleCircuitTracer, load_model
 
@@ -51,7 +126,7 @@ if trace_result.policy_violation:
     print(f"Attribution Score: {trace_result.attribution_scores['total_attribution']:.3f}")
 ```
 
-**Example Output:**
+### Dashboard Output
 ```
 🚨 POLICY VIOLATION DETECTED!
 Risky Token: 'explosives'
@@ -67,12 +142,13 @@ Alert Level: WARNING
 - **Core Tracer**: Integration with attention analysis for circuit attribution
 - **Risk Detection**: Lexical/semantic scanning for problematic outputs  
 - **Policy Engine**: Configurable rules for dangerous circuit patterns
-- **Visualization**: NetworkX/Plotly graphs of attribution paths
+- **Interactive Dashboard**: Real-time monitoring and visualization interface
 - **Integration Layer**: Wrappers for LangChain, CrewAI, and other frameworks
 
 ### Supported Models
 
 - **GPT-2** (124M, 355M, 774M, 1.5B)
+- **DistilGPT-2** (82M - recommended for testing)
 - **GPT-Neo** (125M, 1.3B) 
 - **Other transformer models** with attention outputs
 
@@ -81,25 +157,27 @@ Alert Level: WARNING
 ```
 agentsentinel/
 ├── README.md
-├── requirements.txt
-├── setup.py
-├── config.py                    # Policy and detection configuration
+├── requirements.txt                  # Core dependencies
+├── requirements_streamlit.txt        # Dashboard dependencies  
+├── setup.py                         # Package setup
+├── config.py                        # Policy and detection configuration
+├── streamlit_app.py                 # Main interactive dashboard
+├── run_dashboard.py                 # Dashboard launcher script
 ├── agentsentinel/
 │   ├── __init__.py
 │   ├── core/
-│   │   ├── tracer.py           # Main circuit tracing engine
-│   │   ├── detector.py         # Risk detection for model outputs  
-│   │   ├── policy_engine.py    # Policy evaluation against circuits
-│   │   └── context_extractor.py # Context window management
+│   │   ├── tracer.py               # Main circuit tracing engine
+│   │   ├── detector.py             # Risk detection for model outputs  
+│   │   ├── policy_engine.py        # Policy evaluation against circuits
+│   │   └── context_extractor.py    # Context window management
 │   ├── models/
-│   │   ├── model_loader.py     # Model loading and validation
-│   │   └── supported_models.py # Model compatibility definitions
+│   │   └── model_loader.py         # Model loading and validation
 │   └── analysis/
-│       └── visualization.py    # Attribution graph visualization
+│       └── visualization.py        # Attribution graph visualization
 ├── examples/
-│   ├── basic_demo.py          # Basic risk detection demo
-│   ├── full_circuit_demo.py   # Complete pipeline demonstration
-│   └── debug_demo.py          # Debugging and troubleshooting
+│   ├── basic_demo.py              # Basic risk detection demo
+│   ├── full_circuit_demo.py       # Complete pipeline demonstration
+│   └── debug_demo.py              # Debugging and troubleshooting
 └── tests/
     ├── test_tracer.py
     ├── test_detector.py
@@ -114,7 +192,7 @@ agentsentinel/
 - **Circuit-level attribution** tracing risky tokens to attention heads
 - **Policy-based evaluation** with strict/permissive configurations  
 - **Multi-model support** for GPT-2 family and compatible transformers
-- **Structured logging** with JSON output and severity levels
+- **Interactive dashboard** with real-time analysis and visualization
 - **Professional packaging** ready for pip installation
 
 ### 🔄 In Development  
@@ -143,7 +221,7 @@ AgentSentinel uses policy-based configuration for different security environment
 ### Research Permissive Policy  
 ```python
 "research_permissive": {
-    "dangerous_attention_heads": [(3, 7), (5, 9)],
+    "dangerous_attention_heads": [(3, 7), (5, 9)],  # Only most critical
     "attribution_thresholds": {
         "attention_head_threshold": 0.25,
         "total_dangerous_influence": 0.40
@@ -157,6 +235,7 @@ AgentSentinel uses policy-based configuration for different security environment
 - Python 3.8+
 - PyTorch 1.9+
 - Transformers 4.20+
+- Streamlit 1.28+ (for dashboard)
 - NetworkX 2.6+
 - Plotly 5.0+
 
@@ -165,6 +244,9 @@ AgentSentinel uses policy-based configuration for different security environment
 git clone https://github.com/yourusername/agentsentinel.git
 cd agentsentinel
 pip install -e .
+
+# For dashboard functionality
+pip install -r requirements_streamlit.txt
 ```
 
 ### Development Setup
@@ -179,8 +261,11 @@ pre-commit install
 # Run all tests
 pytest
 
-# Run specific test category
-pytest tests/test_tracer.py -v
+# Test model loading specifically  
+python quick_test.py
+
+# Test dashboard components
+python examples/debug_demo.py
 
 # Run with coverage
 pytest --cov=agentsentinel tests/
@@ -213,6 +298,15 @@ from agentsentinel import PolicyEngine
 engine = PolicyEngine("strict_safety")
 summary = engine.get_policy_summary()
 print(f"Policy has {summary['dangerous_heads_count']} flagged circuits")
+```
+
+### Dashboard Demo
+```python
+# Launch interactive dashboard
+python run_dashboard.py
+
+# Or direct streamlit
+streamlit run streamlit_app.py
 ```
 
 ## 📚 Research Applications
